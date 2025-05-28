@@ -438,22 +438,26 @@ const getWatchHistory = asyncHandler(async (req, res) => {
             },
           },
           {
-            $addFields:{
-              owner:{
-                $first:"$owner",
-              }
-            }
+            $addFields: {
+              owner: {
+                $first: "$owner",
+              },
+            },
           },
         ],
       },
     },
   ]);
-      console.log(user);
-      return res.status(200).json(
-        new ApiResponse(200 , user[0].watchHistory, "Watch History Fetch Successfully ")
+  console.log(user);
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        user[0].watchHistory,
+        "Watch History Fetch Successfully "
       )
-
-
+    );
 });
 
 export {
@@ -468,5 +472,4 @@ export {
   updateUserCoverImage,
   getUserChannelProfile,
   getWatchHistory,
-  
 };
