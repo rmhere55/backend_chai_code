@@ -9,8 +9,8 @@ const userSchema = new Schema(
     username: {
       type: String,
       required: true,
-      unique: true,
-      lowecase: true,
+      unique: true, 
+       lowercase: true, // FIXED
       index: true,
       trim: true,
     },
@@ -24,7 +24,7 @@ const userSchema = new Schema(
       type: String,
       required: true,
       unique: true,
-      lowecase: true,
+      lowercase: true, // ✅
       trim: true,
     },
     avatar: {
@@ -61,26 +61,27 @@ userSchema.pre("save", async function (next) {
 userSchema.methods.isPasswordCorrect = async function (password) {
    return await bcrypt.compare(password , this.password)
 }
-userSchema.methods.generateAcccessToken =  function () {
-   jwt.sign({
+userSchema.methods.generateAccessToken =  function () {
+  return  jwt.sign({
     _id: this.id,
     email:this.email,
     username: this.username,
     fullname:this.fullname
    },
    process.env.ACCESS_TOKEN_SECRET,
-   {
-    expiresIn: process.envACCESS_TOKEN_EXPIRY
+   {   
+      expiresIn: process.env.ACCESS_TOKEN_EXPIRY.trim(), // 🔧 sanitize
+
    }
 )
 }
 userSchema.methods.generateRefreshToken =  function () {
- jwt.sign({
+ return jwt.sign({
     _id: this.id,
    },
    process.env.REFRESH_TOKEN_SECRET,
    {
-    expiresIn: process.REFRESH_TOKEN_EXPIRY
+      expiresIn: process.env.REFRESH_TOKEN_EXPIRY.trim(), // 🔧 sanitize
    }
 )}
 export const User = mongoose.model("User", userSchema);
